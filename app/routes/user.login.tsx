@@ -1,6 +1,6 @@
 import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
-import { addUser, getUserByName } from "~/repository/user.sevrer";
+import { addUser, getUserByName } from "~/repository/user.server";
 
 export const loader: LoaderFunction = async () => {
   return { message: "Hello from the server!" };
@@ -32,7 +32,7 @@ type ActionData = {
   error?: string;
 };
 
-export default function User() {
+export default function UserPage() {
   const actionData = useActionData<ActionData>();
 
   return (

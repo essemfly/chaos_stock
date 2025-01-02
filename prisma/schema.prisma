@@ -32,6 +32,7 @@ model User {
 model Stock {
   id          String        @id @default(cuid())
   name        String
+  prevPrice   Int           @default(20)
   price       Int
   quantity    Int           @default(20)
   users       User[]        @relation("UserStocks")
@@ -54,6 +55,8 @@ model Transaction {
 model RoundInfo {
   id          String        @id @default(cuid())
   roundNumber Int
+  startedAt   DateTime?
+  endedAt     DateTime?
   actions     RoundAction[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -64,10 +67,10 @@ model RoundAction {
   stock   Stock  @relation(fields: [stockId], references: [id])
   stockId String
   price   Int
-  side    Side
+  diff    Int
 
-  RoundInfo   RoundInfo? @relation(fields: [roundInfoId], references: [id])
-  roundInfoId String?
-  User        User?      @relation(fields: [userId], references: [id])
+  roundInfo   RoundInfo @relation(fields: [roundInfoId], references: [id])
+  roundInfoId String
+  user        User?     @relation(fields: [userId], references: [id])
   userId      String?
 }
