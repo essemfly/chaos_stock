@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Side {
+  BUY
+  SELL
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  password     String
+  balance      Int           @default(100)
+  stocks       Stock[]       @relation("UserStocks")
+  roundActions RoundAction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Stock {
+  id          String        @id @default(cuid())
+  name        String
+  price       Int
+  quantity    Int           @default(20)
+  users       User[]        @relation("UserStocks")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  RoundAction RoundAction[]
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  stockId   String
+  quantity  Int
+  price     Int
+  side      Side
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RoundInfo {
+  id          String        @id @default(cuid())
+  roundNumber Int
+  actions     RoundAction[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model RoundAction {
+  id      String @id @default(cuid())
+  stock   Stock  @relation(fields: [stockId], references: [id])
+  stockId String
+  price   Int
+  side    Side
+
+  RoundInfo   RoundInfo? @relation(fields: [roundInfoId], references: [id])
+  roundInfoId String?
+  User        User?      @relation(fields: [userId], references: [id])
+  userId      String?
+}
