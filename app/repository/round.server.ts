@@ -72,6 +72,22 @@ export const listRoundActions = async (): Promise<RoundAction[]> => {
   return await prisma.roundAction.findMany({});
 };
 
+export const listRoundActionsByRoundNumber = async (
+  roundNumber: number
+): Promise<RoundActionWithStocks[]> => {
+  return await prisma.roundAction.findMany({
+    where: {
+      roundInfo: {
+        roundNumber: roundNumber,
+      },
+    },
+    include: {
+      stock: true,
+      roundInfo: true,
+    },
+  });
+};
+
 export const saveRoundAction = async (
   stockId: string,
   diff: number,

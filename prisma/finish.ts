@@ -1,8 +1,27 @@
 import { prisma } from "~/db.server";
-import { endRound } from "~/repository/round.server";
+import {
+  endRound,
+  listRoundActionsByRoundNumber,
+} from "~/repository/round.server";
+import { updateStock } from "~/repository/stocks.server";
 
 async function main() {
-  await endRound();
+  const currentRound = await endRound();
+  if (!currentRound) {
+    console.log("No round to end");
+    return;
+  }
+  const actions = await listRoundActionsByRoundNumber(
+    currentRound.roundNumber + 1
+  );
+  if (actions.length === 0) {
+    console.log("No actions to process");
+    return;
+  }
+
+  for (const action of actions) {
+    await updateStock(action.stockId, action.price, action.stock.price);
+  }
 }
 
 await main()

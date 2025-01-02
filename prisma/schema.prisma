@@ -22,7 +22,7 @@ model User {
   id           String        @id @default(cuid())
   name         String
   password     String
-  balance      Int           @default(100)
+  balance      Int           @default(10000)
   stocks       Stock[]       @relation("UserStocks")
   roundActions RoundAction[]
   createdAt    DateTime      @default(now())

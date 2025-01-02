@@ -66,16 +66,42 @@ export default function MarketPage() {
 
         {/* Stocks List */}
         <div className="grid grid-cols-2 gap-4">
-          {stocks.map((stock) => (
-            <div
-              key={stock.id}
-              className="p-4 border rounded-lg shadow-md bg-white flex flex-col items-center"
-            >
-              <div className="text-lg font-semibold">{stock.name}</div>
-              <div className="text-gray-700 mt-2">{stock.price}원</div>
-              <div className="text-gray-500 mt-1">{stock.quantity}개</div>
-            </div>
-          ))}
+          {stocks.map((stock) => {
+            const priceDifference = stock.prevPrice
+              ? stock.price - stock.prevPrice
+              : 0;
+            const priceChange =
+              priceDifference > 0
+                ? "상승"
+                : priceDifference < 0
+                ? "하락"
+                : "변동 없음";
+            const priceChangeColor =
+              priceDifference > 0
+                ? "text-green-500"
+                : priceDifference < 0
+                ? "text-red-500"
+                : "text-gray-500";
+
+            return (
+              <div
+                key={stock.id}
+                className="p-4 border rounded-lg shadow-md bg-white flex flex-col items-center"
+              >
+                <div className="text-lg font-semibold">{stock.name}</div>
+                <div className="text-gray-700 mt-2 flex items-center">
+                  {stock.price}원
+                  {stock.prevPrice && (
+                    <span className={`ml-2 ${priceChangeColor}`}>
+                      ({priceDifference > 0 ? "+" : ""}
+                      {priceDifference}원 {priceChange})
+                    </span>
+                  )}
+                </div>
+                <div className="text-gray-500 mt-1">{stock.quantity}개</div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

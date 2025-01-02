@@ -10,7 +10,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   if (!userId) {
     return { status: 404, message: "User not found" };
   }
-  console.log("userId", userId);
   const user = await getUserDetail(userId as string);
 
   console.log("user", user?.name);
@@ -28,11 +27,8 @@ export default function UserPage() {
       {/* User Info Section */}
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mb-6">
         <h1 className="text-2xl font-semibold text-center mb-4">
-          User Profile
+          {user.name}
         </h1>
-        <p className="text-gray-700">
-          <strong>Name:</strong> {user.name}
-        </p>
         <p className="text-gray-700">
           <strong>Balance:</strong> {user.balance} 원
         </p>
