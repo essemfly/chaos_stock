@@ -17,28 +17,41 @@ enum Side {
   BUY
   SELL
 }
-
 model User {
-  id           String        @id @default(cuid())
+  id           String          @id @default(cuid())
   name         String
   password     String
-  balance      Int           @default(10000)
-  stocks       Stock[]       @relation("UserStocks")
+  balance      Int             @default(10000)
+  userStocks   UserStock[]
   roundActions RoundAction[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 }
 
 model Stock {
-  id          String        @id @default(cuid())
+  id          String           @id @default(cuid())
   name        String
-  prevPrice   Int           @default(20)
+  prevPrice   Int              @default(20)
   price       Int
-  quantity    Int           @default(20)
-  users       User[]        @relation("UserStocks")
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  maxQuantity Int              @default(20)
+  quantity    Int              @default(20)
+  userStocks  UserStock[]
   RoundAction RoundAction[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model UserStock {
+  id          String           @id @default(cuid())
+  user        User             @relation(fields: [userId], references: [id])
+  userId      String
+  stock       Stock            @relation(fields: [stockId], references: [id])
+  stockId     String
+  quantity    Int              // 사용자가 보유한 주식 수량
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([userId, stockId]) // 한 사용자가 같은 주식을 중복으로 소유할 수 없도록 제약
 }
 
 model Transaction {
@@ -73,4 +86,17 @@ model RoundAction {
   roundInfoId String
   user        User?     @relation(fields: [userId], references: [id])
   userId      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  stockId   String
+  quantity  Int
+  price     Int
+  side      Side
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

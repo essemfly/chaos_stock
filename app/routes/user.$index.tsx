@@ -38,14 +38,14 @@ export default function UserPage() {
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mb-6">
         <h2 className="text-xl font-semibold mb-4">Stocks</h2>
         <div className="grid grid-cols-3 gap-4">
-          {user.stocks.map((stock) => (
+          {user.userStocks.map((userStock) => (
             <div
-              key={stock.id}
+              key={userStock.stock.id}
               className="p-4 border rounded-lg shadow-sm bg-gray-50 flex flex-col items-center"
             >
-              <div className="font-medium">{stock.name}</div>
-              <div className="text-gray-600 mt-2">{stock.price}원</div>
-              <div className="text-gray-500 mt-1">{stock.quantity}개</div>
+              <div className="font-medium">{userStock.stock.name}</div>
+              <div className="text-gray-600 mt-2">현재가: {userStock.stock.price}원</div>
+              <div className="text-gray-500 mt-1">{userStock.quantity}개</div>
             </div>
           ))}
         </div>
