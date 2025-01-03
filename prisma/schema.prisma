@@ -31,7 +31,7 @@ model User {
 model Stock {
   id          String           @id @default(cuid())
   name        String
-  prevPrice   Int              @default(20)
+  prevPrice   Int              @default(2000)
   price       Int
   maxQuantity Int              @default(20)
   quantity    Int              @default(20)

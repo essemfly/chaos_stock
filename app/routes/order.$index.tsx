@@ -196,6 +196,7 @@ export default function OrderPage() {
       setUser(result.user);
       setStocks(result.stocks);
 
+      window.location.href = "/orders";
       // TODO: 페이지 새로고침 또는 데이터 리프레시 로직 추가
     } catch (error) {
       alert("주문 처리 중 오류가 발생했습니다.");
@@ -223,7 +224,7 @@ export default function OrderPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md overflow-y-auto">
         <h1 className="text-2xl font-semibold text-center mb-4 text-gray-900">
           혼돈의 주식시장
         </h1>

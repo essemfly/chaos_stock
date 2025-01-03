@@ -1,19 +1,18 @@
-import { PrismaClient, RoundAction, Stock, User } from "@prisma/client";
-import { listRoundActions, saveRoundAction } from "~/repository/round.server";
-import { listUsers } from "~/repository/user.server";
+import { PrismaClient, RoundAction, Stock } from "@prisma/client";
+import { saveRoundAction } from "~/repository/round.server";
 
 const prisma = new PrismaClient();
 
 async function createStocks() {
   const stockData: Partial<Stock>[] = [
-    { name: "삼전전자", price: 1000, quantity: 20 },
-    { name: "엘에스생활건강", price: 1000, quantity: 20 },
-    { name: "현소자동차", price: 1000, quantity: 20 },
-    { name: "GA칼텍스", price: 1000, quantity: 20 },
-    { name: "씨마트", price: 1000, quantity: 20 },
-    { name: "포스크", price: 1000, quantity: 20 },
-    { name: "커피톡", price: 1000, quantity: 20 },
-    { name: "빅하트", price: 1000, quantity: 20 },
+    { name: "삼전전자", price: 2000, quantity: 20 },
+    { name: "엘에스생활건강", price: 2000, quantity: 20 },
+    { name: "현소자동차", price: 2000, quantity: 20 },
+    { name: "GA칼텍스", price: 2000, quantity: 20 },
+    { name: "씨마트", price: 2000, quantity: 20 },
+    { name: "포스크", price: 2000, quantity: 20 },
+    { name: "커피톡", price: 2000, quantity: 20 },
+    { name: "빅하트", price: 2000, quantity: 20 },
   ];
 
   for (const stock of stockData) {
@@ -42,7 +41,7 @@ async function createRoundActions() {
   const roundInfos = await prisma.roundInfo.findMany();
   const roundActions: Partial<RoundAction>[] = [];
 
-  const oddProb = 0.2;
+  const oddProb = 0.1;
   // 각 주식별 트렌드 상태를 저장
   const stockTrends = new Map<
     string,
@@ -120,7 +119,7 @@ async function createRoundActions() {
 
 async function main() {
     await createStocks();
-    await createRounds(15);
+    await createRounds(12);
   // 총 정보개수는 15* 8 = 120개
   const roundActions = await createRoundActions();
   for (const action of roundActions) {
@@ -131,9 +130,6 @@ async function main() {
       action.price!
     );
   }
-  const users = await listUsers();
-  const actions = await listRoundActions();
-  await assignRoundActionsToUsers(actions, users);
 }
 
 await main()
@@ -156,33 +152,4 @@ function calculateTrendDiff(
 
   const change = Math.floor(currentPrice * magnitude);
   return direction === "up" ? change : -change;
-}
-
-async function assignRoundActionsToUsers(
-  roundActions: RoundAction[],
-  users: User[]
-) {
-  const shuffledActions = roundActions.sort(() => Math.random() - 0.5);
-  let actionIndex = 0;
-
-  for (const user of users) {
-    const userActions = [];
-    for (let i = 0; i < 5 && actionIndex < shuffledActions.length; i++) {
-      const action = shuffledActions[actionIndex];
-      if (!action.userId) {
-        action.userId = user.id;
-        userActions.push(action);
-        actionIndex++;
-      }
-    }
-
-    await prisma.roundAction.updateMany({
-      where: {
-        id: { in: userActions.map((action) => action.id) },
-      },
-      data: {
-        userId: user.id,
-      },
-    });
-  }
 }
