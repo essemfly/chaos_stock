@@ -196,7 +196,6 @@ export default function OrderPage() {
       setUser(result.user);
       setStocks(result.stocks);
 
-      window.location.href = "/orders";
       // TODO: 페이지 새로고침 또는 데이터 리프레시 로직 추가
     } catch (error) {
       alert("주문 처리 중 오류가 발생했습니다.");
