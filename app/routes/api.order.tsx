@@ -75,7 +75,7 @@ export const action: ActionFunction = async ({ request }) => {
       // 보유 수량 확인
       for (const order of data.orders) {
         const userStock = data.userStocks.find(
-          (stock: Stock) => stock.id === order.stockId
+          (stock: Stock) => stock.stockId === order.stockId
         );
         console.log("ORDER", order);
         console.log("userSTock", userStock);
