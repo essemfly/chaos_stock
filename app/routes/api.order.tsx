@@ -1,7 +1,7 @@
 import { Side, Stock } from "@prisma/client";
 import { ActionFunction } from "@remix-run/node";
 import { addOrder } from "~/repository/order.server";
-import { listStocks, updateStockQuantity } from "~/repository/stocks.server";
+import { getStockById, listStocks, updateStockQuantity } from "~/repository/stocks.server";
 import {
   getUserById,
   getUserDetail,
@@ -31,6 +31,15 @@ export const action: ActionFunction = async ({ request }) => {
       }
 
       for (const order of data.orders) {
+
+        const curStock = await getStockById(order.stockId);
+        if (!curStock) {
+          return { error: "주식 정보를 찾을 수 없습니다." };
+        }
+        if (curStock.quantity < order.quantity) {
+          return { error: "주식 수량이 부족합니다." };
+        }
+
         user.balance -= order.price * order.quantity;
         await addOrder(
           data.userId,
@@ -62,16 +71,20 @@ export const action: ActionFunction = async ({ request }) => {
       //   userId: string
       // }
 
+      console.log("userStock", data.userStocks)
       // 보유 수량 확인
       for (const order of data.orders) {
         const userStock = data.userStocks.find(
           (stock: Stock) => stock.id === order.stockId
         );
+        console.log("ORDER", order);
+        console.log("userSTock", userStock);
         if (!userStock || userStock.quantity < order.quantity) {
           return { error: "보유 수량이 부족합니다." };
         }
       }
 
+      console.log("HOIT")
       for (const order of data.orders) {
         user.balance += order.price * order.quantity;
         await addOrder(

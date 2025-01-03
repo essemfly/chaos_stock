@@ -9,6 +9,14 @@ export const listStocks = async (): Promise<Stock[]> => {
   });
 };
 
+export const getStockById = async (id: string): Promise<Stock | null> => {
+  return await prisma.stock.findFirst({
+    where: {
+      id: id,
+    },
+  });
+};
+
 export const updateStock = async (
   id: string,
   price: number,
